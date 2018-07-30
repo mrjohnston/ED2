@@ -24312,7 +24312,7 @@ module ed_state_vars
       if (associated(cpatch%leaf_temp)) then
          nvar=nvar+1
            call vtable_edio_r(npts,cpatch%leaf_temp,nvar,igr,init,cpatch%coglob_id, &
-           var_len,var_len_global,max_ptrs,'LEAF_TEMP :41:hist') 
+           var_len,var_len_global,max_ptrs,'LEAF_TEMP :41:hist:anal') 
          call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
       end if
 

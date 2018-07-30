@@ -24298,14 +24298,14 @@ module ed_state_vars
       if (associated(cpatch%leaf_energy)) then
          nvar=nvar+1
            call vtable_edio_r(npts,cpatch%leaf_energy,nvar,igr,init,cpatch%coglob_id, &
-           var_len,var_len_global,max_ptrs,'LEAF_ENERGY :41:hist') 
+           var_len,var_len_global,max_ptrs,'LEAF_ENERGY :41:hist:analy') 
          call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
       end if
 
       if (associated(cpatch%leaf_hcap)) then
          nvar=nvar+1
            call vtable_edio_r(npts,cpatch%leaf_hcap,nvar,igr,init,cpatch%coglob_id, &
-           var_len,var_len_global,max_ptrs,'LEAF_HCAP :41:hist') 
+           var_len,var_len_global,max_ptrs,'LEAF_HCAP :41:hist:anal') 
          call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
       end if
 
@@ -24319,7 +24319,7 @@ module ed_state_vars
       if (associated(cpatch%leaf_vpdef)) then
          nvar=nvar+1
            call vtable_edio_r(npts,cpatch%leaf_vpdef,nvar,igr,init,cpatch%coglob_id, &
-           var_len,var_len_global,max_ptrs,'LEAF_VPDEF :41:hist') 
+           var_len,var_len_global,max_ptrs,'LEAF_VPDEF :41:hist:anal') 
          call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
       end if
 
@@ -24341,7 +24341,7 @@ module ed_state_vars
       if (associated(cpatch%leaf_water)) then
          nvar=nvar+1
            call vtable_edio_r(npts,cpatch%leaf_water,nvar,igr,init,cpatch%coglob_id, &
-           var_len,var_len_global,max_ptrs,'LEAF_WATER :41:hist') 
+           var_len,var_len_global,max_ptrs,'LEAF_WATER :41:hist:anal') 
          call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
       end if
 

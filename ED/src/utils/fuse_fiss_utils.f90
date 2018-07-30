@@ -290,7 +290,7 @@ module fuse_fiss_utils
          new_area        = new_area + csite%area(ipa)
       end do
 
-      if (abs(new_area-1.0) > 1.e-5) then
+      if (abs(new_area-1.0) > 1.e-4) then
          write (unit=*,fmt='(a,1x,es12.5)') ' + ELIM_AREA:',elim_area
          write (unit=*,fmt='(a,1x,es12.5)') ' + NEW_AREA: ',new_area
          call fatal_error('New_area should be 1 but it isn''t!!!','terminate_patches'      &

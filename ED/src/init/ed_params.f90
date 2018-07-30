@@ -5301,7 +5301,7 @@ subroutine init_ff_coms
 
 
    !----- The following flag switches detailed debugging on. ------------------------------!
-   print_fuse_details = .false.
+   print_fuse_details = .true.
    fuse_prefix        = 'patch_fusion_'
    !---------------------------------------------------------------------------------------!
 

@@ -2021,7 +2021,7 @@ module ed_state_vars
       real,pointer,dimension(:,:)  :: avg_monthly_pcpg
       !<Monthly rainfall [mm/month] for each month over the past 12 months.
 
-      type(prescribed_phen),pointer, dimension(:) :: phen_pars
+      type(prescribed_phen),pointer, dimension(:,:) :: phen_pars
 
       !-----------------------------------
       ! DISTURBANCE
@@ -4047,7 +4047,7 @@ module ed_state_vars
       allocate(cpoly%ignition_rate                 (                          nsites))
       allocate(cpoly%lambda_fire                   (                       12,nsites))
       allocate(cpoly%avg_monthly_pcpg              (                       12,nsites))
-      allocate(cpoly%phen_pars                     (                          nsites))
+      allocate(cpoly%phen_pars                     (                    n_pft,nsites))
       allocate(cpoly%disturbance_memory            (n_dist_types,n_dist_types,nsites))
       allocate(cpoly%disturbance_rates             (n_dist_types,n_dist_types,nsites))
       allocate(cpoly%green_leaf_factor             (                    n_pft,nsites))

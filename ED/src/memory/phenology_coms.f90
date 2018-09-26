@@ -213,25 +213,25 @@ module phenology_coms
    !      Derived type describing prescribed phenology.                                    !
    !---------------------------------------------------------------------------------------!
    type prescribed_phen
+      !----- Number of years for which prescribed phenology (must be same for each PFT) ---!
+      integer :: nyears !single number
+
       !----- Number of PFTs for	which precribed	phenology is available.	-------------------!
       integer :: npfts ! single number
 
       !----- The PFTs for which	prescibed phenology is available. -------------------------!
       integer, dimension(:), pointer ::	pfts ! 1D array
 
-      !----- Number of years for which prescribed phenology (must be same for each PFT) ---!
-      integer :: nyears !single number
-
       !----- The years for which prescribed phenology is available for each PFT. ----------!
-      integer, dimension(:,:), pointer :: years
+      integer, dimension(:), pointer :: years ! 1D array, same years for each PFT
     
       !----- Two parameters of the springtime logistic function describing leaf flush. ----!
-      real, dimension(:), pointer :: flush_a
-      real, dimension(:), pointer :: flush_b
+      real, dimension(:,:), pointer :: flush_a ! 2D array, changes by year & PFT
+      real, dimension(:,:), pointer :: flush_b
 
       !----- Two parameters of the autumn logistic function describing leaf color. --------!
-      real, dimension(:), pointer :: color_a
-      real, dimension(:), pointer :: color_b
+      real, dimension(:,:), pointer :: color_a
+      real, dimension(:,:), pointer :: color_b
       
    end type prescribed_phen
    !---------------------------------------------------------------------------------------!

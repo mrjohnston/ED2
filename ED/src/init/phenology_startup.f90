@@ -512,7 +512,7 @@ module phenology_startup
             open(unit=12,file=trim(phen_file),form='formatted',status='old',action='read')
             
             !----- Read the number of years, and allocate the temporary array. ------------!
-            read(unit=12,fmt=*) phen_temp%nyears
+            read(unit=12,fmt=*) phen_temp%nyears, phen_temp%npfts
             allocate(phen_temp%years  (phen_temp%nyears))
             allocate(phen_temp%flush_a(phen_temp%nyears))
             allocate(phen_temp%flush_b(phen_temp%nyears))

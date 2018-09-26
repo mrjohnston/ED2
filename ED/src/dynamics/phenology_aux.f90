@@ -66,8 +66,8 @@ module phenology_aux
          !      Calculate the factors.  Precalc denominator and limit rate in order to     !
          ! increase numerical stability (MCD 10/23/08).                                    !
          !---------------------------------------------------------------------------------!
-         elonDen = real((phen_pars%flush_a(my_year) * real(doy)),kind=8)                   &
-                 ** dble(max(phen_pars%flush_b(my_year),-100.))
+         elonDen = real((phen_pars%flush_a(1,my_year) * real(doy)),kind=8)                   &
+                 ** dble(max(phen_pars%flush_b(1,my_year),-100.))
          elonDen = 1.0d0 / (1.0d0 + elonDen)
          if(elonDen < 0.0001d0) then
             elongf = 0.0
@@ -90,11 +90,11 @@ module phenology_aux
 
          !----- Calculate the factors. ----------------------------------------------------!
          elongf =  1.0                                                                     &
-                /  (1.0 + (phen_pars%color_a(my_year) * real(doy))                         &
-                ** phen_pars%color_b(my_year))
+                /  (1.0 + (phen_pars%color_a(1,my_year) * real(doy))                         &
+                ** phen_pars%color_b(1,my_year))
          delay  =  1.0                                                                     &
-                /  (1.0 + (phen_pars%color_a(my_year) * real(doy) * 1.095)                 &
-                ** phen_pars%color_b(my_year))
+                /  (1.0 + (phen_pars%color_a(1,my_year) * real(doy) * 1.095)                 &
+                ** phen_pars%color_b(1,my_year))
       end if
 
       if(elongf < elongf_min) elongf = 0.0

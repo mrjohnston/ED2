@@ -451,6 +451,7 @@ module phenology_startup
       character(len=str_len)                                :: phen_file
       integer                                               :: igr
       integer                                               :: isi
+      integer                                               :: ipft
       integer                                               :: ipy
       integer                                               :: iyr
       integer                                               :: doy
@@ -556,22 +557,21 @@ print *, phen_temp%color_b
               ! pftloop: do ipft = 1,phen_temp%npfts
 
                !----- Allocate memory for all years having data. --------------------------!
-               cphen_pars=cpoly%phen_pars(isi) ! To make allocate statements more readable
-
-               allocate(cphen_pars%years  (phen_temp%nyears)) 
-               allocate(cphen_pars%pfts   (phen_temp%npfts))
-               allocate(cphen_pars%flush_a(phen_temp%npfts,phen_temp%nyears))
-               allocate(cphen_pars%flush_b(phen_temp%npfts,phen_temp%nyears))
-               allocate(cphen_pars%color_a(phen_temp%npfts,phen_temp%nyears))
-               allocate(cphen_pars%color_b(phen_temp%npfts,phen_temp%nyears))
+              
+               allocate(cpoly%phen_pars(isi)%years  (phen_temp%nyears)) 
+               allocate(cpoly%phen_pars(isi)%pfts   (phen_temp%npfts))
+               allocate(cpoly%phen_pars(isi)%flush_a(phen_temp%npfts,phen_temp%nyears))
+               allocate(cpoly%phen_pars(isi)%flush_b(phen_temp%npfts,phen_temp%nyears))
+               allocate(cpoly%phen_pars(isi)%color_a(phen_temp%npfts,phen_temp%nyears))
+               allocate(cpoly%phen_pars(isi)%color_b(phen_temp%npfts,phen_temp%nyears))
                      
                do ipft = 1,phen_temp%npfts
                   do iyr = 1,phen_temp%nyears
-                     cphen_pars%years  (iyr) = phen_temp%years(iyr)
-                     cphen_pars%flush_a(ipft,iyr) = phen_temp%flush_a(ipft,iyr)
-                     cphen_pars%flush_b(ipft,iyr) = phen_temp%flush_b(ipft,iyr)
-                     cphen_pars%color_a(ipft,iyr) = phen_temp%color_a(ipft,iyr)
-                     cphen_pars%color_b(ipft,iyr) = phen_temp%color_b(ipft,iyr)
+                     cpoly%phen_pars(isi)%years  (iyr) = phen_temp%years(iyr)
+                     cpoly%phen_pars(isi)%flush_a(ipft,iyr) = phen_temp%flush_a(ipft,iyr)
+                     cpoly%phen_pars(isi)%flush_b(ipft,iyr) = phen_temp%flush_b(ipft,iyr)
+                     cpoly%phen_pars(isi)%color_a(ipft,iyr) = phen_temp%color_a(ipft,iyr)
+                     cpoly%phen_pars(isi)%color_b(ipft,iyr) = phen_temp%color_b(ipft,iyr)
                   enddo
                enddo
 

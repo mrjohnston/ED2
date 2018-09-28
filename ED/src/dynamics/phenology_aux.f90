@@ -152,7 +152,7 @@ module phenology_aux
               print *, "FLUSH A > COLOR A"
               elongf = max(elongf, elongf_down)
               delay = max(delay, delay_down)
-          else then
+          else
               print *, "FLUSH A < COLOR A"
               elongf = min(elongf, elongf_down)
               delay = min(delay, delay_down)

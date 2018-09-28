@@ -41,6 +41,10 @@ module phenology_aux
       integer                             :: pft
       !------------------------------------------------------------------------------------!
 
+   do pft = 1, n_pft
+      select case (phenology(pft)
+   case (2) !PRESCRIBED COLD DECIDUOUS
+  
       !------------------------------------------------------------------------------------!
       !     This assumes dropping/flushing based on the day of year and hemisphere.        !
       ! + Northern Hemisphere: dropping between August 1 and December 31;                  !
@@ -99,13 +103,12 @@ module phenology_aux
 
       if(elongf < elongf_min) elongf = 0.0
 
-      !----- Load the values for each PFT. ------------------------------------------------!
-      do pft = 1, n_pft
-         select case (phenology(pft))
-         case (2)
             green_leaf_factor(pft) = elongf
             leaf_aging_factor(pft) = delay
-         case default
+   
+   case(6) !PRESCRIBE WITHOUT CONSTRAINT
+       
+   case default !ESSENTIALLY NOT PRESCRIBED
             green_leaf_factor(pft) = 1.0
             leaf_aging_factor(pft) = 1.0
          end select

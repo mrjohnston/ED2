@@ -37,12 +37,15 @@ module phenology_aux
       integer                             :: my_year
       real                                :: elongf
       real                                :: delay
+      real                                :: elongf_down
+      real                                :: delay_down
       real(kind=8)                        :: elonDen
       integer                             :: pft
       !------------------------------------------------------------------------------------!
 
    do pft = 1, n_pft
-      select case (phenology(pft)
+      select case (phenology(pft))
+
    case (2) !PRESCRIBED COLD DECIDUOUS
   
       !------------------------------------------------------------------------------------!
@@ -70,8 +73,8 @@ module phenology_aux
          !      Calculate the factors.  Precalc denominator and limit rate in order to     !
          ! increase numerical stability (MCD 10/23/08).                                    !
          !---------------------------------------------------------------------------------!
-         elonDen = real((phen_pars%flush_a(1,my_year) * real(doy)),kind=8)                   &
-                 ** dble(max(phen_pars%flush_b(1,my_year),-100.))
+         elonDen = real((phen_pars%flush_a(pft,my_year) * real(doy)),kind=8)                   &
+                 ** dble(max(phen_pars%flush_b(pft,my_year),-100.))
          elonDen = 1.0d0 / (1.0d0 + elonDen)
          if(elonDen < 0.0001d0) then
             elongf = 0.0
@@ -94,11 +97,11 @@ module phenology_aux
 
          !----- Calculate the factors. ----------------------------------------------------!
          elongf =  1.0                                                                     &
-                /  (1.0 + (phen_pars%color_a(1,my_year) * real(doy))                         &
-                ** phen_pars%color_b(1,my_year))
+                /  (1.0 + (phen_pars%color_a(pft,my_year) * real(doy))                         &
+                ** phen_pars%color_b(pft,my_year))
          delay  =  1.0                                                                     &
-                /  (1.0 + (phen_pars%color_a(1,my_year) * real(doy) * 1.095)                 &
-                ** phen_pars%color_b(1,my_year))
+                /  (1.0 + (phen_pars%color_a(pft,my_year) * real(doy) * 1.095)                 &
+                ** phen_pars%color_b(pft,my_year))
       end if
 
       if(elongf < elongf_min) elongf = 0.0
@@ -106,9 +109,62 @@ module phenology_aux
             green_leaf_factor(pft) = elongf
             leaf_aging_factor(pft) = delay
    
-   case(6) !PRESCRIBE WITHOUT CONSTRAINT
-       
-   case default !ESSENTIALLY NOT PRESCRIBED
+   case(6) !FORCE PRESCRIBED, not just cold deciduous in a temperate system
+ 
+         !----- Get the year. Consider only springtime -------------------------------------!
+         
+         n_recycle_years = iphenysf - iphenys1 + 1
+
+         if (iyear > iphenysf) then
+            my_year = mod(iyear-iphenys1,n_recycle_years) + 1
+         elseif (iyear < iphenys1) then
+            my_year = n_recycle_years - mod(iphenysf-iyear,n_recycle_years)
+         else
+            my_year = iyear - iphenys1 + 1
+         end if
+
+         !-- Calculate the up-rising branch of the phenology function.---------------------!
+
+         elonDen = real((phen_pars%flush_a(pft,my_year) * real(doy)),kind=8)                   &
+                 ** dble(max(phen_pars%flush_b(pft,my_year),-100.))
+         elonDen = 1.0d0 / (1.0d0 + elonDen)
+         if(elonDen < 0.0001d0) then
+            elongf = 0.0
+         else
+            elongf = sngl(elonDen)
+         end if
+         delay = elongf
+
+         !-- Calculate the down-falling branch of the phenology function.---------------------!
+
+         elongf_down =  1.0                                                                     &
+                /  (1.0 + (phen_pars%color_a(pft,my_year) * real(doy))                         &
+                ** phen_pars%color_b(pft,my_year))
+         delay_down  =  1.0                                                                     &
+                /  (1.0 + (phen_pars%color_a(pft,my_year) * real(doy) * 1.095)                 &
+                ** phen_pars%color_b(pft,my_year))
+         
+          !-- Determine whether to take the minimum or the maximum: --------------------------! 
+          ! IF the down-falling branch is in the next year, take the maximum of the functions
+          ! IF the down-falling branch is in the same year, take the minimum of the functions
+            
+          if (phen_pars%flush_a(pft,my_year) > phen_pars%color_a(pft,my_year)) then
+              print *, "FLUSH A > COLOR A"
+              elongf = max(elongf, elongf_down)
+              delay = max(delay, delay_down)
+          else then
+              print *, "FLUSH A < COLOR A"
+              elongf = min(elongf, elongf_down)
+              delay = min(delay, delay_down)
+          endif
+          
+          if(elongf < elongf_min) elongf = 0.0
+
+   !MRJ: Not sure about these two lines
+          green_leaf_factor(pft) = elongf
+          leaf_aging_factor(pft) = delay
+
+   case default !UNLESS THE PHENOLOGY OF THE PFT = 0 or 6 (see ed_params), NOT actually PRESCRIBED
             green_leaf_factor(pft) = 1.0
             leaf_aging_factor(pft) = 1.0
          end select

@@ -436,6 +436,7 @@ module phenology_startup
                                , phenpath              & ! intent(in)
                                , max_phenology_dist    ! ! intent(in)
       use ed_max_dims   , only : str_len               & ! intent(in)
+                               : n_pft                 & ! intent(in)
                                , maxlist               ! ! intent(in)
       use phenology_aux , only : prescribed_leaf_state ! ! subroutine
       implicit none
@@ -515,14 +516,14 @@ module phenology_startup
             !----- Read the number of years and PFTs, and allocate the temporary array. ---!
             read(unit=12,fmt=*) phen_temp%nyears, phen_temp%npfts
             allocate(phen_temp%years  (phen_temp%nyears)) !1D array of years
-            allocate(phen_temp%pfts   (phen_temp%npfts)) !1D array of PFT ids
-            allocate(phen_temp%flush_a(phen_temp%npfts,phen_temp%nyears)) ! 2D arrays
-            allocate(phen_temp%flush_b(phen_temp%npfts,phen_temp%nyears))
-            allocate(phen_temp%color_a(phen_temp%npfts,phen_temp%nyears))
-            allocate(phen_temp%color_b(phen_temp%npfts,phen_temp%nyears))
+         !  allocate(phen_temp%pfts   (phen_temp%npfts)) !1D array of PFT ids
+            allocate(phen_temp%flush_a(phen_temp%n_pft,phen_temp%nyears)) ! 2D arrays
+            allocate(phen_temp%flush_b(phen_temp%n_pft,phen_temp%nyears))
+            allocate(phen_temp%color_a(phen_temp%n_pft,phen_temp%nyears))
+            allocate(phen_temp%color_b(phen_temp%n_pft,phen_temp%nyears))
 
             !----- Read the remaining lines. ----------------------------------------------!
-            do ipft = 1,phen_temp%npfts
+            do ipft = 1,n_pft
                read(unit=12,fmt=*) phen_temp%pfts(ipft)        
                do iyr = 1,phen_temp%nyears
                read(unit=12,fmt=*)  phen_temp%years(iyr) &
@@ -550,7 +551,7 @@ print *, "INIT/PHENOLOGY_STARTUP PHEN_TEMP COLOR_A"
 print *, phen_temp%color_a
 print *, "INIT/PHENOLOGY_STARTUP PHEN_TEMP COLOR_B"
 print *, phen_temp%color_b
-
+print *, "DONE READING PRESCRIBED PHENOLOGY ==============================="
 
             !----- Write phenology to each site. ------------------------------------------!
             siteloop: do isi = 1,cpoly%nsites

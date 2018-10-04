@@ -514,7 +514,8 @@ module phenology_startup
             open(unit=12,file=trim(phen_file),form='formatted',status='old',action='read')
             
             !----- Read the number of years and PFTs, and allocate the temporary array. ---!
-            read(unit=12,fmt=*) phen_temp%nyears, phen_temp%npfts
+         !   read(unit=12,fmt=*) phen_temp%nyears, phen_temp%npfts
+            read(unit=12,fmt=*) phen_temp%nyears
             allocate(phen_temp%years  (phen_temp%nyears)) !1D array of years
          !  allocate(phen_temp%pfts   (phen_temp%npfts)) !1D array of PFT ids
             allocate(phen_temp%flush_a(phen_temp%n_pft,phen_temp%nyears)) ! 2D arrays
@@ -523,7 +524,7 @@ module phenology_startup
             allocate(phen_temp%color_b(phen_temp%n_pft,phen_temp%nyears))
 
             !----- Read the remaining lines. ----------------------------------------------!
-            do ipft = 1,n_pft
+            do ipft = 1,n_pft ! I want to change this so that I can have NA in the slots that aren't my PFT prescriptions, but those slots exist
                read(unit=12,fmt=*) phen_temp%pfts(ipft)        
                do iyr = 1,phen_temp%nyears
                read(unit=12,fmt=*)  phen_temp%years(iyr) &

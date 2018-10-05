@@ -436,7 +436,7 @@ module phenology_startup
                                , phenpath              & ! intent(in)
                                , max_phenology_dist    ! ! intent(in)
       use ed_max_dims   , only : str_len               & ! intent(in)
-                               : n_pft                 & ! intent(in)
+                               , n_pft                 & ! intent(in)
                                , maxlist               ! ! intent(in)
       use phenology_aux , only : prescribed_leaf_state ! ! subroutine
       implicit none
@@ -446,6 +446,7 @@ module phenology_startup
       type(prescribed_phen)                                 :: phen_temp
       character(len=str_len), dimension(maxlist)            :: full_list
       character(len=str_len), dimension(maxlist)            :: phen_list
+      character(len=str_len), dimension(10)                 :: phenfile_firstline
       real                  , dimension(maxlist)            :: phen_lon
       real                  , dimension(maxlist)            :: phen_lat
       real                  , dimension(maxlist)            :: phen_dist
@@ -513,18 +514,33 @@ module phenology_startup
             !----- Open phenology file. ---------------------------------------------------!
             open(unit=12,file=trim(phen_file),form='formatted',status='old',action='read')
             
+            !Figure out whether we're using old format (1 prescription per site) or new (prescription per PFT)
+!            read(unit=12, '(a)', end=99) phenfile_firstline !this is the entire line
+ !           print *, "First line of phenology file = "
+  !          print *, phenfile_firstline
+!
+ !           close (unit=12,status='keep') !so that i can re-open and start on line 1
+
             !----- Read the number of years and PFTs, and allocate the temporary array. ---!
+ 
+           open(unit=12,file=trim(phen_file),form='formatted',status='old',action='read')
+
             read(unit=12,fmt=*) phen_temp%nyears, phen_temp%npfts !TO DO: make compatible with old format - perhaps by going to the old code os phen_temp%npfts does not exist??
             allocate(phen_temp%years  (phen_temp%nyears)) !1D array of years
-            allocate(phen_temp%pfts   (phen_temp%n_pft)) !1D array of PFT ids
-            allocate(phen_temp%flush_a(phen_temp%n_pft,phen_temp%nyears)) ! 2D arrays
-            allocate(phen_temp%flush_b(phen_temp%n_pft,phen_temp%nyears))
-            allocate(phen_temp%color_a(phen_temp%n_pft,phen_temp%nyears))
-            allocate(phen_temp%color_b(phen_temp%n_pft,phen_temp%nyears))
+            allocate(phen_temp%pfts   (phen_temp%npfts)) !1D array of PFT ids
+            allocate(phen_temp%flush_a(n_pft,phen_temp%nyears)) ! 2D arrays
+            allocate(phen_temp%flush_b(n_pft,phen_temp%nyears))
+            allocate(phen_temp%color_a(n_pft,phen_temp%nyears))
+            allocate(phen_temp%color_b(n_pft,phen_temp%nyears))
+
+            phen_temp%flush_a(:,:) = 0.
+            phen_temp%flush_b(:,:) = 0.
+            phen_temp%color_a(:,:) = 0.
+            phen_temp%color_b(:,:) = 0.
 
             !----- Read the remaining lines. ----------------------------------------------!
             do ipft = 1, phen_temp%npfts
-               read(unit=12,fmt=*) phen_temp%pfts(ipft)        
+              read(unit=12,fmt=*) phen_temp%pfts(ipft)        
                do iyr = 1,phen_temp%nyears
                read(unit=12,fmt=*)  phen_temp%years(iyr) &
                                   , phen_temp%flush_a(phen_temp%pfts(ipft),iyr)      &
@@ -559,11 +575,11 @@ print *, "DONE READING PRESCRIBED PHENOLOGY ==============================="
 
                !----- Allocate memory for all years having data. --------------------------!
               
-               allocate(cpoly%phen_pars(isi)%years  (phen_temp%nyears)) 
-               allocate(cpoly%phen_pars(isi)%flush_a(n_pft,phen_temp%nyears))
-               allocate(cpoly%phen_pars(isi)%flush_b(n_pft,phen_temp%nyears))
-               allocate(cpoly%phen_pars(isi)%color_a(n_pft,phen_temp%nyears))
-               allocate(cpoly%phen_pars(isi)%color_b(n_pft,phen_temp%nyears))
+               allocate(cpoly%phen_pars(isi)%years    (phen_temp%nyears)) 
+               allocate(cpoly%phen_pars(isi)%flush_a  (n_pft,phen_temp%nyears))
+               allocate(cpoly%phen_pars(isi)%flush_b  (n_pft,phen_temp%nyears))
+               allocate(cpoly%phen_pars(isi)%color_a  (n_pft,phen_temp%nyears))
+               allocate(cpoly%phen_pars(isi)%color_b  (n_pft,phen_temp%nyears))
                      
                do ipft = 1,phen_temp%npfts
                   do iyr = 1,phen_temp%nyears

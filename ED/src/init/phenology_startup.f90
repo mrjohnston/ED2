@@ -514,24 +514,23 @@ module phenology_startup
             open(unit=12,file=trim(phen_file),form='formatted',status='old',action='read')
             
             !----- Read the number of years and PFTs, and allocate the temporary array. ---!
-         !   read(unit=12,fmt=*) phen_temp%nyears, phen_temp%npfts
-            read(unit=12,fmt=*) phen_temp%nyears
+            read(unit=12,fmt=*) phen_temp%nyears, phen_temp%npfts !TO DO: make compatible with old format - perhaps by going to the old code os phen_temp%npfts does not exist??
             allocate(phen_temp%years  (phen_temp%nyears)) !1D array of years
-         !  allocate(phen_temp%pfts   (phen_temp%npfts)) !1D array of PFT ids
+            allocate(phen_temp%pfts   (phen_temp%n_pft)) !1D array of PFT ids
             allocate(phen_temp%flush_a(phen_temp%n_pft,phen_temp%nyears)) ! 2D arrays
             allocate(phen_temp%flush_b(phen_temp%n_pft,phen_temp%nyears))
             allocate(phen_temp%color_a(phen_temp%n_pft,phen_temp%nyears))
             allocate(phen_temp%color_b(phen_temp%n_pft,phen_temp%nyears))
 
             !----- Read the remaining lines. ----------------------------------------------!
-            do ipft = 1,n_pft ! I want to change this so that I can have NA in the slots that aren't my PFT prescriptions, but those slots exist
+            do ipft = 1, phen_temp%npfts
                read(unit=12,fmt=*) phen_temp%pfts(ipft)        
                do iyr = 1,phen_temp%nyears
                read(unit=12,fmt=*)  phen_temp%years(iyr) &
-                                  , phen_temp%flush_a(ipft,iyr)      &
-                                  , phen_temp%flush_b(ipft,iyr)         &
-                                  , phen_temp%color_a(ipft,iyr)         &
-                                  , phen_temp%color_b(ipft,iyr)
+                                  , phen_temp%flush_a(phen_temp%pfts(ipft),iyr)      &
+                                  , phen_temp%flush_b(phen_temp%pfts(ipft),iyr)         &
+                                  , phen_temp%color_a(phen_temp%pfts(ipft),iyr)         &
+                                  , phen_temp%color_b(phen_temp%pfts(ipft),iyr)
                end do !End year loop - by now, will have read through a complete PFT
             end do !End PFT loop
             close (unit=12,status='keep')
@@ -561,19 +560,18 @@ print *, "DONE READING PRESCRIBED PHENOLOGY ==============================="
                !----- Allocate memory for all years having data. --------------------------!
               
                allocate(cpoly%phen_pars(isi)%years  (phen_temp%nyears)) 
-               allocate(cpoly%phen_pars(isi)%pfts   (phen_temp%npfts))
-               allocate(cpoly%phen_pars(isi)%flush_a(phen_temp%npfts,phen_temp%nyears))
-               allocate(cpoly%phen_pars(isi)%flush_b(phen_temp%npfts,phen_temp%nyears))
-               allocate(cpoly%phen_pars(isi)%color_a(phen_temp%npfts,phen_temp%nyears))
-               allocate(cpoly%phen_pars(isi)%color_b(phen_temp%npfts,phen_temp%nyears))
+               allocate(cpoly%phen_pars(isi)%flush_a(n_pft,phen_temp%nyears))
+               allocate(cpoly%phen_pars(isi)%flush_b(n_pft,phen_temp%nyears))
+               allocate(cpoly%phen_pars(isi)%color_a(n_pft,phen_temp%nyears))
+               allocate(cpoly%phen_pars(isi)%color_b(n_pft,phen_temp%nyears))
                      
                do ipft = 1,phen_temp%npfts
                   do iyr = 1,phen_temp%nyears
                      cpoly%phen_pars(isi)%years  (iyr) = phen_temp%years(iyr)
-                     cpoly%phen_pars(isi)%flush_a(ipft,iyr) = phen_temp%flush_a(ipft,iyr)
-                     cpoly%phen_pars(isi)%flush_b(ipft,iyr) = phen_temp%flush_b(ipft,iyr)
-                     cpoly%phen_pars(isi)%color_a(ipft,iyr) = phen_temp%color_a(ipft,iyr)
-                     cpoly%phen_pars(isi)%color_b(ipft,iyr) = phen_temp%color_b(ipft,iyr)
+                     cpoly%phen_pars(isi)%flush_a(phen_temp%pfts(ipft),iyr) = phen_temp%flush_a(phen_temp%pfts(ipft),iyr)
+                     cpoly%phen_pars(isi)%flush_b(phen_temp%pfts(ipft),iyr) = phen_temp%flush_b(phen_temp%pfts(ipft),iyr)
+                     cpoly%phen_pars(isi)%color_a(phen_temp%pfts(ipft),iyr) = phen_temp%color_a(phen_temp%pfts(ipft),iyr)
+                     cpoly%phen_pars(isi)%color_b(phen_temp%pfts(ipft),iyr) = phen_temp%color_b(phen_temp%pfts(ipft),iyr)
                   enddo
                enddo
 

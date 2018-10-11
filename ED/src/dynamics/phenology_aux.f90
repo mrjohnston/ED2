@@ -163,11 +163,10 @@ module phenology_aux
           
           if(elongf < elongf_min) elongf = 0.0
 
-   !MRJ: Not sure about these two lines
           green_leaf_factor(pft) = elongf
           leaf_aging_factor(pft) = delay
 
-   case default !UNLESS THE PHENOLOGY OF THE PFT = 0 or 6 (see ed_params), NOT actually PRESCRIBED
+   case default !UNLESS THE PHENOLOGY OF THE PFT = 2 or 6 (see ed_params), NOT actually PRESCRIBED
             green_leaf_factor(pft) = 1.0
             leaf_aging_factor(pft) = 1.0
          end select

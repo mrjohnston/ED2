@@ -388,7 +388,7 @@ subroutine update_phenology(doy, cpoly, isi, lat)
                !---------------------------------------------------------------------------!
             end if  ! critical moisture
 
-         case (2)
+         case (2,6)
             !------------------------------------------------------------------------------!
             !    Cold deciduous.  Here we must check two possibilities:                    !
             !                                                                              !

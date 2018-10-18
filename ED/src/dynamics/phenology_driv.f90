@@ -59,17 +59,17 @@ subroutine phenology_driver(cgrid, doy, month, tfact)
                                       ,cpoly%green_leaf_factor(:,isi)                      &
                                       ,cpoly%leaf_aging_factor(:,isi),cpoly%phen_pars(isi)) 
             call update_phenology(doy,cpoly,isi,cgrid%lat(ipy))
-            print *, "Phenology Driver IPHEN_SCHEME = 1; factors as follows:"
-            print *, "cpatch%elongf(ico):"
-            print *, cpatch%elongf
-            print *, "green_leaf_factor"
-            print *, green_leaf_factor
-            print *, "leaf_aging_factor"
-            print *, leaf_aging_factor
-            print *, "drop_cold"
-            print *, drop_cold
-            print *, "leaf_out_cold"
-            print *, leaf_out_cold
+            write (unit=*,fmt='(a)') "Phenology Driver IPHEN_SCHEME = 1; factors as follows:"
+            write (unit=*,fmt='(a)'),"cpatch%elongf(ico):"
+!           write *, cpatch%elongf
+!            print *, "green_leaf_factor"
+!            print *, green_leaf_factor
+!            print *, "leaf_aging_factor"
+!            print *, leaf_aging_factor
+!            print *, "drop_cold"
+!            print *, drop_cold
+!            print *, "leaf_out_cold"
+!            print *, leaf_out_cold
 
          case (3)
             !----- KIM light-controlled predictive phenology scheme. ----------------------!

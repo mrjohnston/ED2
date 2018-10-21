@@ -26,6 +26,9 @@ module phenology_startup
       logical,parameter :: bypass=.true.
 
       !----- Initialize the Botta et al. scheme. ------------------------------------------!
+      print *, "Running subroutine: init/phenology_startup/phenology_init."
+      print *, "     iphen_scheme = "
+      print *, iphen_scheme
       select case (iphen_scheme)
       case (1)
 
@@ -469,6 +472,7 @@ module phenology_startup
       real                                      , external  :: dist_gc 
       !------------------------------------------------------------------------------------!
 
+      print *, "Running subroutine: init/phenology_startup/read_prescribed_phenology."
 
       !------ List all files that has the phenology prefix. -------------------------------!
       call ed_filelist(full_list,phenpath,nflist)
@@ -551,23 +555,23 @@ module phenology_startup
             end do !End PFT loop
             close (unit=12,status='keep')
 
-print *, "INIT/PHENOLOGY_STARTUP PHEN_TEMP NYEARS"
+print *, "    INIT/PHENOLOGY_STARTUP PHEN_TEMP NYEARS"
 print *, phen_temp%nyears
-print *, "INIT/PHENOLOGY_STARTUP PHEN_TEMP NPFTS"
+print *, "    INIT/PHENOLOGY_STARTUP PHEN_TEMP NPFTS"
 print *, phen_temp%npfts
-print *, "INIT/PHENOLOGY_STARTUP PHEN_TEMP PFTIDS"
+print *, "    INIT/PHENOLOGY_STARTUP PHEN_TEMP PFTIDS"
 print *, phen_temp%pfts
-print *, "INIT/PHENOLOGY_STARTUP PHEN_TEMP YEARIDS"
+print *, "    INIT/PHENOLOGY_STARTUP PHEN_TEMP YEARIDS"
 print *, phen_temp%years
-print *, "INIT/PHENOLOGY_STARTUP PHEN_TEMP FLUSH_A"
+print *, "    INIT/PHENOLOGY_STARTUP PHEN_TEMP FLUSH_A"
 print *, phen_temp%flush_a
-print *, "INIT/PHENOLOGY_STARTUP PHEN_TEMP FLUSH_B"
+print *, "    INIT/PHENOLOGY_STARTUP PHEN_TEMP FLUSH_B"
 print *, phen_temp%flush_b
-print *, "INIT/PHENOLOGY_STARTUP PHEN_TEMP COLOR_A"
+print *, "    INIT/PHENOLOGY_STARTUP PHEN_TEMP COLOR_A"
 print *, phen_temp%color_a
-print *, "INIT/PHENOLOGY_STARTUP PHEN_TEMP COLOR_B"
+print *, "    INIT/PHENOLOGY_STARTUP PHEN_TEMP COLOR_B"
 print *, phen_temp%color_b
-print *, "DONE READING PRESCRIBED PHENOLOGY ==============================="
+print *, "    DONE READING PRESCRIBED PHENOLOGY ==============================="
 
             !----- Write phenology to each site. ------------------------------------------!
             siteloop: do isi = 1,cpoly%nsites

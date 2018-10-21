@@ -148,14 +148,14 @@ module phenology_aux
           ! IF the down-falling branch is in the next year, take the maximum of the functions
           ! IF the down-falling branch is in the same year, take the minimum of the functions
             
-          if (phen_pars%flush_a(pft,my_year) > phen_pars%color_a(pft,my_year)) then
+          if (phen_pars%flush_a(pft,my_year) < phen_pars%color_a(pft,my_year)) then
               print *,phen_pars%flush_a(pft,my_year) 
               print *,phen_pars%color_a(pft,my_year)
               print *, "FLUSH A > COLOR A"
               elongf = max(elongf, elongf_down)
               delay = max(delay, delay_down)
           endif 
-          if (phen_pars%flush_a(pft,my_year) < phen_pars%color_a(pft,my_year)) then
+          if (phen_pars%flush_a(pft,my_year) > phen_pars%color_a(pft,my_year)) then
               print *, "FLUSH A < COLOR A"
               elongf = min(elongf, elongf_down)
               delay = min(delay, delay_down)

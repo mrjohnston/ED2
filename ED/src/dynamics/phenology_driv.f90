@@ -27,7 +27,7 @@ subroutine phenology_driver(cgrid, doy, month, tfact)
    integer                         :: isi
    integer                         :: ipa
    !---------------------------------------------------------------------------------------!
-
+     print *, "subroutine dynamics/phenology_driv/phenology_driver"
    do ipy = 1,cgrid%npolygons
       cpoly => cgrid%polygon(ipy)
 
@@ -44,6 +44,7 @@ subroutine phenology_driver(cgrid, doy, month, tfact)
          
          select case (iphen_scheme)
          case (-1,0,2,4)
+
             !------------------------------------------------------------------------------!
             !     Default predictive scheme (Botta et al.) or the modified drought         !
             ! deciduous phenology for broadleaf PFTs.                                      !
@@ -53,15 +54,30 @@ subroutine phenology_driver(cgrid, doy, month, tfact)
             call update_phenology(doy,cpoly,isi,cgrid%lat(ipy))
             
          case (1)
+
             !----- Use prescribed phenology. ----------------------------------------------!
-            call prescribed_leaf_state(cgrid%lat(ipy), current_time%month                  &
+print *, "Running subroutine: dynamics/phenology_driv/phenology_driver"
+         
+   call prescribed_leaf_state(cgrid%lat(ipy), current_time%month                  &
                                       ,current_time%year, doy                              &
                                       ,cpoly%green_leaf_factor(:,isi)                      &
                                       ,cpoly%leaf_aging_factor(:,isi),cpoly%phen_pars(isi)) 
+print *, "Calling update_phenology in phenology_driver"
             call update_phenology(doy,cpoly,isi,cgrid%lat(ipy))
-
+            write (unit=*,fmt='(a)') "Phenology Driver IPHEN_SCHEME = 1; factors as follows:"
+            write (unit=*,fmt='(a)'),"cpatch%elongf(ico):"
+!           write *, cpatch%elongf
+!            print *, "green_leaf_factor"
+!            print *, green_leaf_factor
+!            print *, "leaf_aging_factor"
+!            print *, leaf_aging_factor
+!            print *, "drop_cold"
+!            print *, drop_cold
+!            print *, "leaf_out_cold"
+!            print *, leaf_out_cold
 
          case (3)
+
             !----- KIM light-controlled predictive phenology scheme. ----------------------!
             call update_thermal_sums(month, cpoly, isi, cgrid%lat(ipy))
             call update_turnover(cpoly,isi)
@@ -226,7 +242,7 @@ subroutine update_phenology(doy, cpoly, isi, lat)
    real                                  :: elongf_try
    real                                  :: elongf_grow
    !----- Variables used only for debugging purposes. -------------------------------------!
-   logical                  , parameter  :: printphen=.false.
+   logical                  , parameter  :: printphen=.true.
    logical, dimension(n_pft), save       :: first_time=.true.
    !---------------------------------------------------------------------------------------!
 
@@ -388,7 +404,7 @@ subroutine update_phenology(doy, cpoly, isi, lat)
                !---------------------------------------------------------------------------!
             end if  ! critical moisture
 
-         case (2)
+         case (2,6)
             !------------------------------------------------------------------------------!
             !    Cold deciduous.  Here we must check two possibilities:                    !
             !                                                                              !
@@ -1502,11 +1518,17 @@ subroutine assign_prescribed_phen(green_leaf_factor,leaf_aging_factor,dbh,height
    real   , intent(in)  :: height
    integer, intent(in)  :: pft
    !---------------------------------------------------------------------------------------!
-
+   print *, "in subroutine dynamics/phenology_driv/assign_prescribed_phen"
    drop_cold     = green_leaf_factor /= leaf_aging_factor
    leaf_out_cold = green_leaf_factor > elongf_min .and. (.not. drop_cold)
    bl_max        = green_leaf_factor * size2bl(dbh, height, pft)
-
+   
+   print *, "drop_cold"
+print *, drop_cold
+   print *, "leaf_out_cold"
+print *, leaf_out_cold
+   print *, "bl_max"
+print *, bl_max
    return
 end subroutine assign_prescribed_phen
 !==========================================================================================!

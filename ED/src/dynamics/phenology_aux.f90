@@ -111,9 +111,9 @@ module phenology_aux
             leaf_aging_factor(pft) = delay
    
    case(6) !FORCE PRESCRIBED, not just cold deciduous in a temperate system
-          print *, "    pft"
-          print *, pft
-         print *, "    phenology(pft) = 6, hooray!" 
+     !     print *, "    pft"
+     !     print *, pft
+     !    print *, "    phenology(pft) = 6, hooray!" 
          !----- Get the year. Consider only springtime -------------------------------------!
          
          n_recycle_years = iphenysf - iphenys1 + 1
@@ -130,11 +130,11 @@ module phenology_aux
 
          elonDen = real((phen_pars%flush_a(pft,my_year) * real(doy)),kind=8)                   &
                  ** dble(max(phen_pars%flush_b(pft,my_year),-100.))
-         print*,'flush_a',phen_pars%flush_a(pft,my_year),'doy',doy
-         print*,'flush_b',phen_pars%flush_b(pft,my_year),'elonDen',elonDen
+        ! print*,'flush_a',phen_pars%flush_a(pft,my_year),'doy',doy
+        ! print*,'flush_b',phen_pars%flush_b(pft,my_year),'elonDen',elonDen
          elonDen = 1.0d0 / (1.0d0 + elonDen)
-         print*,'true elonDen', elonDen
-         print*,'sngl(elonDen)',sngl(elonDen)
+        ! print*,'true elonDen', elonDen
+        ! print*,'sngl(elonDen)',sngl(elonDen)
          if(elonDen < 0.0001d0) then
             elongf = 0.0
          else
@@ -151,7 +151,7 @@ module phenology_aux
                 /  (1.0 + (phen_pars%color_a(pft,my_year) * real(doy) * 1.095)                 &
                 ** phen_pars%color_b(pft,my_year))
          
-          print *, 'elongf and elongf_down',elongf,elongf_down,'delay and delay_down',delay,delay_down
+        !  print *, 'elongf and elongf_down',elongf,elongf_down,'delay and delay_down',delay,delay_down
           !-- Determine whether to take the minimum or the maximum: --------------------------! 
           ! IF the down-falling branch is in the next year, take the maximum of the functions
           ! IF the down-falling branch is in the same year, take the minimum of the functions
@@ -159,14 +159,14 @@ module phenology_aux
           if (phen_pars%flush_a(pft,my_year) < phen_pars%color_a(pft,my_year)) then
          !     print *,phen_pars%flush_a(pft,my_year) 
          !     print *,phen_pars%color_a(pft,my_year)
-              print *, "FLUSH A < COLOR A"
+         !     print *, "FLUSH A < COLOR A"
 
               elongf = max(elongf, elongf_down)
               delay = max(delay, delay_down)
           endif 
           if (phen_pars%flush_a(pft,my_year) > phen_pars%color_a(pft,my_year)) then
 
-              print *, "FLUSH A > COLOR A"
+         !    print *, "FLUSH A > COLOR A"
 
               elongf = min(elongf, elongf_down)
               delay = min(delay, delay_down)
@@ -178,10 +178,10 @@ module phenology_aux
           green_leaf_factor(pft) = elongf
           leaf_aging_factor(pft) = delay
           
-          print *, "    green_leaf_factor(pft)"
-          print *, green_leaf_factor(pft)
-          print *, "    leaf_aging_factor(pft)"
-          print *, leaf_aging_factor(pft)
+         ! print *, "    green_leaf_factor(pft)"
+         ! print *, green_leaf_factor(pft)
+         ! print *, "    leaf_aging_factor(pft)"
+         ! print *, leaf_aging_factor(pft)
 
    case default !UNLESS THE PHENOLOGY OF THE PFT = 2 or 6 (see ed_params), NOT actually PRESCRIBED
             green_leaf_factor(pft) = 1.0

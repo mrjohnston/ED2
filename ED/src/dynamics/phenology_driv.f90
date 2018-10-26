@@ -64,8 +64,8 @@ print *, "Running subroutine: dynamics/phenology_driv/phenology_driver"
                                       ,cpoly%leaf_aging_factor(:,isi),cpoly%phen_pars(isi)) 
 print *, "Calling update_phenology in phenology_driver"
             call update_phenology(doy,cpoly,isi,cgrid%lat(ipy))
-            write (unit=*,fmt='(a)') "Phenology Driver IPHEN_SCHEME = 1; factors as follows:"
-            write (unit=*,fmt='(a)'),"cpatch%elongf(ico):"
+!            write (unit=*,fmt='(a)') "Phenology Driver IPHEN_SCHEME = 1; factors as follows:"
+!            write (unit=*,fmt='(a)'),"cpatch%elongf(ico):"
 !           write *, cpatch%elongf
 !            print *, "green_leaf_factor"
 !            print *, green_leaf_factor
@@ -242,7 +242,7 @@ subroutine update_phenology(doy, cpoly, isi, lat)
    real                                  :: elongf_try
    real                                  :: elongf_grow
    !----- Variables used only for debugging purposes. -------------------------------------!
-   logical                  , parameter  :: printphen=.true.
+   logical                  , parameter  :: printphen=.false.
    logical, dimension(n_pft), save       :: first_time=.true.
    !---------------------------------------------------------------------------------------!
 
@@ -1523,12 +1523,12 @@ subroutine assign_prescribed_phen(green_leaf_factor,leaf_aging_factor,dbh,height
    leaf_out_cold = green_leaf_factor > elongf_min .and. (.not. drop_cold)
    bl_max        = green_leaf_factor * size2bl(dbh, height, pft)
    
-   print *, "drop_cold"
-print *, drop_cold
-   print *, "leaf_out_cold"
-print *, leaf_out_cold
-   print *, "bl_max"
-print *, bl_max
+!   print *, "drop_cold"
+!print *, drop_cold
+!   print *, "leaf_out_cold"
+!print *, leaf_out_cold
+!   print *, "bl_max"
+!print *, bl_max
    return
 end subroutine assign_prescribed_phen
 !==========================================================================================!

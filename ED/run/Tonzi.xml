@@ -14,7 +14,7 @@
     <b2Ht>-0.0388399996</b2Ht>
     <Vm0>22.7000007629</Vm0>
     <q>0.3463000059</q>
-    <buff>1</buff>
+    <cbuff>1</cbuff>
     <clumping_factor>0.735</clumping_factor>
     <leaf_width>0.0500000007</leaf_width>
     <vm_q10>2.2000000477</vm_q10>
@@ -63,7 +63,7 @@
     <b2Ht>-0.023</b2Ht>
     <Vm0>48.215675354</Vm0>
     <q>1.9851590395</q>
-    <buff>1</buff>
+    <cbuff>1</cbuff>
     <clumping_factor>0.735</clumping_factor>
     <leaf_width>0.1000000015</leaf_width>
     <vm_q10>2.4261939526</vm_q10>
@@ -115,7 +115,7 @@
     <b2Ht>-0.75</b2Ht>
     <Vm0>39.9386405945</Vm0>
     <q>0.9231200218</q>
-    <buff>1</buff>
+    <cbuff>1</cbuff>
     <clumping_factor>0.84</clumping_factor>
     <leaf_width>0.0500000007</leaf_width>
     <vm_q10>1.8633229733</vm_q10>

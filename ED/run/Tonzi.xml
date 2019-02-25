@@ -32,6 +32,7 @@
     <dark_respiration_factor>0.0149999997</dark_respiration_factor>
     <qsw>0</qsw>
     <dbh_crit>77.7029876709</dbh_crit>
+    <fuse_dbh_max>100000</fuse_dbh_max>
     <rho>0</rho>
     <D0>0.0099999998</D0>
     <mort1>1</mort1>
@@ -81,6 +82,7 @@
     <dark_respiration_factor>0.000365</dark_respiration_factor>
     <qsw>0</qsw>
     <dbh_crit>42.2326278687</dbh_crit>
+    <fuse_dbh_max>100000</fuse_dbh_max>
     <rho>0.6999999881</rho>
     <D0>0.0311539993</D0>
     <mort1>0.337808013</mort1>

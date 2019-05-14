@@ -1181,7 +1181,8 @@ subroutine ed_opspec_misc
                                     , runoff_time                  ! ! intent(in)
    use mem_polygons          , only : maxsite                      & ! intent(in)
                                     , maxpatch                     ! ! intent(in)
-   use grid_coms             , only : ngrids                       ! ! intent(in)
+   use grid_coms             , only : ngrids                       & ! intent(in)
+                                    , nzg                          ! ! intent(in)
    use physiology_coms       , only : iphysiol                     & ! intent(in)
                                     , h2o_plant_lim                & ! intent(in)
                                     , plant_hydro_scheme           & ! intent(in)
@@ -1270,6 +1271,7 @@ subroutine ed_opspec_misc
    integer                :: ifaterr
    integer                :: ifm
    integer                :: ipft
+   integer                :: iz
    logical                :: agri_ok
    logical                :: plantation_ok
    logical                :: patch_detailed
@@ -1458,14 +1460,15 @@ subroutine ed_opspec_misc
       end if
    end do
 #endif
-
-   if (nslcon < 1 .or. nslcon > ed_nstyp) then
+   do iz=1,nzg
+    if (nslcon(iz) < 1 .or. nslcon(iz) > ed_nstyp) then
       write (reason,fmt='(2(a,1x,i4),a)')                                                  &
              'Invalid NSLCON, it must be between 1 and ',ed_nstyp,'. Yours is set to'      &
-            ,nslcon,'...'
+            ,nslcon(iz),'...'
       call opspec_fatal(reason,'opspec_misc')
       ifaterr = ifaterr +1
-   end if
+    end if
+   end do
 
    if (isoilcol < 1 .or. isoilcol > ed_nscol) then
       write (reason,fmt='(2(a,1x,i4),a)')                                                  &

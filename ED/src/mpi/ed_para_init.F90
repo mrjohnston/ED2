@@ -192,7 +192,7 @@ subroutine get_work(ifm,nxp,nyp)
                           , grid_type      & ! intent(in)
                           , maxsite        ! ! intent(in)
    use ed_misc_coms, only : min_site_area  ! ! intent(in)
-   use ed_grid_coms, only : nzg            ! ! intent(in)
+   use grid_coms, only : nzg               ! ! intent(in)
    implicit none
    !----- Arguments. ----------------------------------------------------------------------!
    integer, intent(in) :: ifm

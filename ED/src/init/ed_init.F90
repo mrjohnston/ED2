@@ -711,6 +711,7 @@ subroutine print_soil_info(cgrid,ifm)
    integer                            :: isi
    integer                            :: slash
    integer                            :: endstr
+   integer                            :: k
    !---------------------------------------------------------------------------------------!
    
    if (ifm /=1 .or. n_poi /= 1 .or. cgrid%npolygons /= 1) return

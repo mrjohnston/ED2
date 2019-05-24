@@ -336,7 +336,7 @@ subroutine copy_nl(copy_type)
       ied_init_mode             = nl%ied_init_mode
 
       isoilflg                  = nl%isoilflg
-      nslcon                    = nl%nslcon
+      nslcon(1:nzgmax)          = nl%nslcon(1:nzgmax)
       isoilcol                  = nl%isoilcol
       slxclay                   = nl%slxclay
       slxsand                   = nl%slxsand
@@ -658,7 +658,7 @@ subroutine copy_nl(copy_type)
    !---------------------------------------------------------------------------------------!
    if ( any(isoilflg == 2) .and. slxclay > 0. .and. slxsand > 0. .and.                     &
         (slxclay + slxsand) <= 1. ) then
-      nslcon = find_soil_class(slxsand,slxclay)
+      nslcon(:) = find_soil_class(slxsand,slxclay) !If I specify slxsand and slxclay in ED2IN, it would make the entire soil column this texture - lose heterogeneity!!
    end if
    !---------------------------------------------------------------------------------------!
 

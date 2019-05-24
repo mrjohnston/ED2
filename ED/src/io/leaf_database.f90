@@ -9,6 +9,7 @@ subroutine leaf_database(ofn,nsite,nlandsea,iaction,lat,lon,classout,pctout)
                          , isoilcol      & ! intent(in)
                          , ed_nstyp      & ! intent(in)
                          , ed_nvtyp      ! ! intent(in)
+   !use grid_coms, only   , nzg           ! ! intent(in)
    implicit none
    !----- Arguments. ----------------------------------------------------------------------!
    character(len=*)                          , intent(in)  :: ofn
@@ -294,7 +295,7 @@ subroutine leaf_database(ofn,nsite,nlandsea,iaction,lat,lon,classout,pctout)
                case ('leaf_class')
                   idato(:,:) = 0
                case ('soil_text')
-                  idato(:,:) = nslcon
+                  idato(:,:) = nslcon(1) !If try to read in DB but it doesn't exist, just use bottom layer [EK soil heterogeneity edit]
                case ('soil_col')
                   idato(:,:) = isoilcol
                case default
@@ -403,7 +404,7 @@ subroutine leaf_database(ofn,nsite,nlandsea,iaction,lat,lon,classout,pctout)
             !    Assign the default class as this may be used if soil and land use maps    !
             ! disagree about whether a place is land or water.                             !
             !------------------------------------------------------------------------------!
-            classout(:,ilandsea) = nslcon
+            classout(:,ilandsea) = nslcon(1)
             !------------------------------------------------------------------------------!
 
          else

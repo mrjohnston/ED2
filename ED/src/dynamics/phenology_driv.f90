@@ -56,13 +56,13 @@ subroutine phenology_driver(cgrid, doy, month, tfact)
          case (1)
 
             !----- Use prescribed phenology. ----------------------------------------------!
-print *, "Running subroutine: dynamics/phenology_driv/phenology_driver"
+!print *, "Running subroutine: dynamics/phenology_driv/phenology_driver"
          
    call prescribed_leaf_state(cgrid%lat(ipy), current_time%month                  &
                                       ,current_time%year, doy                              &
                                       ,cpoly%green_leaf_factor(:,isi)                      &
                                       ,cpoly%leaf_aging_factor(:,isi),cpoly%phen_pars(isi)) 
-print *, "Calling update_phenology in phenology_driver"
+!print *, "Calling update_phenology in phenology_driver"
             call update_phenology(doy,cpoly,isi,cgrid%lat(ipy))
 !            write (unit=*,fmt='(a)') "Phenology Driver IPHEN_SCHEME = 1; factors as follows:"
 !            write (unit=*,fmt='(a)'),"cpatch%elongf(ico):"
@@ -1518,7 +1518,7 @@ subroutine assign_prescribed_phen(green_leaf_factor,leaf_aging_factor,dbh,height
    real   , intent(in)  :: height
    integer, intent(in)  :: pft
    !---------------------------------------------------------------------------------------!
-   print *, "in subroutine dynamics/phenology_driv/assign_prescribed_phen"
+   !print *, "in subroutine dynamics/phenology_driv/assign_prescribed_phen"
    drop_cold     = green_leaf_factor /= leaf_aging_factor
    leaf_out_cold = green_leaf_factor > elongf_min .and. (.not. drop_cold)
    bl_max        = green_leaf_factor * size2bl(dbh, height, pft)

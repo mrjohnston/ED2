@@ -43,7 +43,7 @@ module phenology_aux
       integer                             :: pft
       !------------------------------------------------------------------------------------!
 
-      print *, "Running subroutine: dynamics/phenology_aux/prescribed_leaf_state"
+   !   print *, "Running subroutine: dynamics/phenology_aux/prescribed_leaf_state"
    do pft = 1, n_pft
       select case (phenology(pft))
 

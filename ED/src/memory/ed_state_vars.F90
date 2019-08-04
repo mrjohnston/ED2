@@ -24944,7 +24944,7 @@ module ed_state_vars
       if (associated(cpatch%sla)) then
          nvar=nvar+1
            call vtable_edio_r(npts,cpatch%sla,nvar,igr,init,cpatch%coglob_id, &
-           var_len,var_len_global,max_ptrs,'SLA :41:hist') 
+           var_len,var_len_global,max_ptrs,'SLA :41:hist:mont') 
          call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
       end if
 

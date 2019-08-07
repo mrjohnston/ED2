@@ -37,8 +37,6 @@ contains
                h2dbh =  ( log(hgt_ref(ipft) / ( hgt_ref(ipft) - h ) ) / b1Ht(ipft) )       &
                   ** ( 1.0 / b2Ht(ipft) )
          end select
-      else if (ipft == 7) then
-         h2dbh = (3.09*h) - 5.372
       else ! Temperate
          h2dbh = log(1.0-(h-hgt_ref(ipft))/b1Ht(ipft))/b2Ht(ipft)
       end if
@@ -90,8 +88,6 @@ contains
                      !----- Poorter et al. (2006) allometry. ------------------------------!
                      dbh2h = hgt_ref(ipft) * (1. - exp(-b1Ht(ipft) * mdbh ** b2Ht(ipft)))
                end select
-            else if (ipft == 7) then
-               dbh2h = (5.372 + dbh)/3.09
             else !----- Temperate PFT allometry. ------------------------------------------!
                dbh2h = hgt_ref(ipft) + b1Ht(ipft) * (1.0 - exp(b2Ht(ipft) * dbh))
             end if

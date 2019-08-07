@@ -27,7 +27,7 @@ subroutine phenology_driver(cgrid, doy, month, tfact)
    integer                         :: isi
    integer                         :: ipa
    !---------------------------------------------------------------------------------------!
-
+     print *, "subroutine dynamics/phenology_driv/phenology_driver"
    do ipy = 1,cgrid%npolygons
       cpoly => cgrid%polygon(ipy)
 
@@ -44,6 +44,7 @@ subroutine phenology_driver(cgrid, doy, month, tfact)
          
          select case (iphen_scheme)
          case (-1,0,2,4)
+
             !------------------------------------------------------------------------------!
             !     Default predictive scheme (Botta et al.) or the modified drought         !
             ! deciduous phenology for broadleaf PFTs.                                      !
@@ -53,6 +54,7 @@ subroutine phenology_driver(cgrid, doy, month, tfact)
             call update_phenology(doy,cpoly,isi,cgrid%lat(ipy))
             
          case (1)
+
             !----- Use prescribed phenology. ----------------------------------------------!
 !print *, "Running subroutine: dynamics/phenology_driv/phenology_driver"
          
@@ -75,6 +77,7 @@ subroutine phenology_driver(cgrid, doy, month, tfact)
 !            print *, leaf_out_cold
 
          case (3)
+
             !----- KIM light-controlled predictive phenology scheme. ----------------------!
             call update_thermal_sums(month, cpoly, isi, cgrid%lat(ipy))
             call update_turnover(cpoly,isi)
@@ -401,7 +404,7 @@ subroutine update_phenology(doy, cpoly, isi, lat)
                !---------------------------------------------------------------------------!
             end if  ! critical moisture
 
-         case (2)
+         case (2,6)
             !------------------------------------------------------------------------------!
             !    Cold deciduous.  Here we must check two possibilities:                    !
             !                                                                              !

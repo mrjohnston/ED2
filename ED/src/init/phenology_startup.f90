@@ -439,6 +439,7 @@ module phenology_startup
                                , phenpath              & ! intent(in)
                                , max_phenology_dist    ! ! intent(in)
       use ed_max_dims   , only : str_len               & ! intent(in)
+                               , n_pft                 & ! intent(in)
                                , maxlist               ! ! intent(in)
       use phenology_aux , only : prescribed_leaf_state ! ! subroutine
       implicit none
@@ -448,12 +449,14 @@ module phenology_startup
       type(prescribed_phen)                                 :: phen_temp
       character(len=str_len), dimension(maxlist)            :: full_list
       character(len=str_len), dimension(maxlist)            :: phen_list
+      character(len=str_len), dimension(10)                 :: phenfile_firstline
       real                  , dimension(maxlist)            :: phen_lon
       real                  , dimension(maxlist)            :: phen_lat
       real                  , dimension(maxlist)            :: phen_dist
       character(len=str_len)                                :: phen_file
       integer                                               :: igr
       integer                                               :: isi
+      integer                                               :: ipft
       integer                                               :: ipy
       integer                                               :: iyr
       integer                                               :: doy
@@ -469,6 +472,7 @@ module phenology_startup
       real                                      , external  :: dist_gc 
       !------------------------------------------------------------------------------------!
 
+      print *, "Running subroutine: init/phenology_startup/read_prescribed_phenology."
 
       !------ List all files that has the phenology prefix. -------------------------------!
       call ed_filelist(full_list,phenpath,nflist)
@@ -514,20 +518,41 @@ module phenology_startup
             !----- Open phenology file. ---------------------------------------------------!
             open(unit=12,file=trim(phen_file),form='formatted',status='old',action='read')
             
-            !----- Read the number of years, and allocate the temporary array. ------------!
-            read(unit=12,fmt=*) phen_temp%nyears
-            allocate(phen_temp%years  (phen_temp%nyears))
-            allocate(phen_temp%flush_a(phen_temp%nyears))
-            allocate(phen_temp%flush_b(phen_temp%nyears))
-            allocate(phen_temp%color_a(phen_temp%nyears))
-            allocate(phen_temp%color_b(phen_temp%nyears))
+            !Figure out whether we're using old format (1 prescription per site) or new (prescription per PFT)
+!            read(unit=12, '(a)', end=99) phenfile_firstline !this is the entire line
+ !           print *, "First line of phenology file = "
+  !          print *, phenfile_firstline
+!
+ !           close (unit=12,status='keep') !so that i can re-open and start on line 1
+
+            !----- Read the number of years and PFTs, and allocate the temporary array. ---!
+ 
+           open(unit=12,file=trim(phen_file),form='formatted',status='old',action='read')
+
+            read(unit=12,fmt=*) phen_temp%nyears, phen_temp%npfts !TO DO: make compatible with old format - perhaps by going to the old code os phen_temp%npfts does not exist??
+            allocate(phen_temp%years  (phen_temp%nyears)) !1D array of years
+            allocate(phen_temp%pfts   (phen_temp%npfts)) !1D array of PFT ids
+            allocate(phen_temp%flush_a(n_pft,phen_temp%nyears)) ! 2D arrays
+            allocate(phen_temp%flush_b(n_pft,phen_temp%nyears))
+            allocate(phen_temp%color_a(n_pft,phen_temp%nyears))
+            allocate(phen_temp%color_b(n_pft,phen_temp%nyears))
+
+            phen_temp%flush_a(:,:) = 0.
+            phen_temp%flush_b(:,:) = 0.
+            phen_temp%color_a(:,:) = 0.
+            phen_temp%color_b(:,:) = 0.
 
             !----- Read the remaining lines. ----------------------------------------------!
-            do iyr = 1,phen_temp%nyears
-               read(unit=12,fmt=*)  phen_temp%years(iyr)  , phen_temp%flush_a(iyr)         &
-                                  , phen_temp%flush_b(iyr), phen_temp%color_a(iyr)         &
-                                  , phen_temp%color_b(iyr)
-            end do
+            do ipft = 1, phen_temp%npfts
+              read(unit=12,fmt=*) phen_temp%pfts(ipft)        
+               do iyr = 1,phen_temp%nyears
+               read(unit=12,fmt=*)  phen_temp%years(iyr) &
+                                  , phen_temp%flush_a(phen_temp%pfts(ipft),iyr)      &
+                                  , phen_temp%flush_b(phen_temp%pfts(ipft),iyr)         &
+                                  , phen_temp%color_a(phen_temp%pfts(ipft),iyr)         &
+                                  , phen_temp%color_b(phen_temp%pfts(ipft),iyr)
+               end do !End year loop - by now, will have read through a complete PFT
+            end do !End PFT loop
             close (unit=12,status='keep')
 
 !print *, "    INIT/PHENOLOGY_STARTUP PHEN_TEMP NYEARS"
@@ -550,23 +575,26 @@ module phenology_startup
 
             !----- Write phenology to each site. ------------------------------------------!
             siteloop: do isi = 1,cpoly%nsites
-               
+              ! pftloop: do ipft = 1,phen_temp%npfts
+
                !----- Allocate memory for all years having data. --------------------------!
-               cpoly%phen_pars(isi)%nyears = phen_temp%nyears
-               allocate(cpoly%phen_pars(isi)%years(cpoly%phen_pars(isi)%nyears))
-               allocate(cpoly%phen_pars(isi)%flush_a(cpoly%phen_pars(isi)%nyears))
-               allocate(cpoly%phen_pars(isi)%flush_b(cpoly%phen_pars(isi)%nyears))
-               allocate(cpoly%phen_pars(isi)%color_a(cpoly%phen_pars(isi)%nyears))
-               allocate(cpoly%phen_pars(isi)%color_b(cpoly%phen_pars(isi)%nyears))
+              
+               allocate(cpoly%phen_pars(isi)%years    (phen_temp%nyears)) 
+               allocate(cpoly%phen_pars(isi)%flush_a  (n_pft,phen_temp%nyears))
+               allocate(cpoly%phen_pars(isi)%flush_b  (n_pft,phen_temp%nyears))
+               allocate(cpoly%phen_pars(isi)%color_a  (n_pft,phen_temp%nyears))
+               allocate(cpoly%phen_pars(isi)%color_b  (n_pft,phen_temp%nyears))
                      
-               do iyr = 1,phen_temp%nyears
-                  cpoly%phen_pars(isi)%years(iyr)   = phen_temp%years(iyr)
-                  cpoly%phen_pars(isi)%flush_a(iyr) = phen_temp%flush_a(iyr)
-                  cpoly%phen_pars(isi)%flush_b(iyr) = phen_temp%flush_b(iyr)
-                  cpoly%phen_pars(isi)%color_a(iyr) = phen_temp%color_a(iyr)
-                  cpoly%phen_pars(isi)%color_b(iyr) = phen_temp%color_b(iyr)
+               do ipft = 1,phen_temp%npfts
+                  do iyr = 1,phen_temp%nyears
+                     cpoly%phen_pars(isi)%years  (iyr) = phen_temp%years(iyr)
+                     cpoly%phen_pars(isi)%flush_a(phen_temp%pfts(ipft),iyr) = phen_temp%flush_a(phen_temp%pfts(ipft),iyr)
+                     cpoly%phen_pars(isi)%flush_b(phen_temp%pfts(ipft),iyr) = phen_temp%flush_b(phen_temp%pfts(ipft),iyr)
+                     cpoly%phen_pars(isi)%color_a(phen_temp%pfts(ipft),iyr) = phen_temp%color_a(phen_temp%pfts(ipft),iyr)
+                     cpoly%phen_pars(isi)%color_b(phen_temp%pfts(ipft),iyr) = phen_temp%color_b(phen_temp%pfts(ipft),iyr)
+                  enddo
                enddo
-               
+
                !----- Initialize green_leaf_factor and leaf_aging_factor. -----------------!
                doy = julday(imontha,idatea,iyeara)
                call prescribed_leaf_state(cgrid%lat(ipy),imontha,iyeara,doy                &
@@ -574,7 +602,8 @@ module phenology_startup
                                          ,cpoly%leaf_aging_factor(:,ipy)                   &
                                          ,cpoly%phen_pars(isi))
             end do siteloop
-
+            
+            deallocate(phen_temp%pfts)
             deallocate(phen_temp%years)
             deallocate(phen_temp%flush_a)
             deallocate(phen_temp%flush_b)

@@ -20411,7 +20411,7 @@ module ed_state_vars
       if (associated(csite%today_Af_decomp)) then
          nvar=nvar+1
            call vtable_edio_r(npts,csite%today_Af_decomp,nvar,igr,init,csite%paglob_id, &
-           var_len,var_len_global,max_ptrs,'TODAY_AF_DECOMP :31:hist') 
+           var_len,var_len_global,max_ptrs,'TODAY_AF_DECOMP :31:hist:mont') 
          call metadata_edio(nvar,igr,'NOT A DIAGNOSTIC-WILL ZERO AT END OF DAY','[NA]','NA') 
       end if
 
@@ -20446,7 +20446,7 @@ module ed_state_vars
       if (associated(csite%ssc_in)) then
          nvar=nvar+1
            call vtable_edio_r(npts,csite%ssc_in,nvar,igr,init,csite%paglob_id, &
-           var_len,var_len_global,max_ptrs,'SSC_IN :31:hist') 
+           var_len,var_len_global,max_ptrs,'SSC_IN :31:hist:mont') 
          call metadata_edio(nvar,igr,'No metadata available','[NA]','NA') 
       end if
 
